@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Cliente - Agiliza</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-gray-50">
+    <header class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <i data-lucide="home" class="h-8 w-8 text-blue-600 mr-2"></i>
+                    <span class="text-2xl font-bold text-gray-900" id="pageTitle">Cadastrar Cliente</span>
+                </div>
+                <button onclick="voltar()" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                    Voltar
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <form id="clienteForm" class="main-layout" onsubmit="salvarCliente(event)">
+        <div class="content-area">
+            <div class="max-w-4xl space-y-6">
+                <!-- Dados Básicos -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                        <i data-lucide="user" class="h-5 w-5 text-blue-600"></i>
+                        Dados Básicos
+                    </h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Nome Completo</label>
+                            <input type="text" id="nome" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">CPF</label>
+                            <input type="text" id="cpf" required placeholder="000.000.000-00" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Indicação (Imobiliária/Corretor)</label>
+                            <select id="indicacao" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <option value="">Selecione...</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Imóvel e Financiamento -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                        <i data-lucide="home" class="h-5 w-5 text-blue-600"></i>
+                        Imóvel e Financiamento
+                    </h2>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de Imóvel</label>
+                            <div class="flex flex-wrap gap-2">
+                                <label class="checkbox-item">
+                                    <input type="radio" name="imovel" value="Novo" class="hidden">
+                                    <span>Novo</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="radio" name="imovel" value="Usado" class="hidden">
+                                    <span>Usado</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="radio" name="imovel" value="Terreno" class="hidden">
+                                    <span>Terreno</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="radio" name="imovel" value="Terreno e Construção" class="hidden">
+                                    <span>Terreno e Construção</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de Carta de Crédito</label>
+                            <div class="flex flex-wrap gap-2">
+                                <label class="checkbox-item">
+                                    <input type="radio" name="cartaCredito" value="MCMV" class="hidden">
+                                    <span>MCMV</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="radio" name="cartaCredito" value="SBPE" class="hidden">
+                                    <span>SBPE</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Tabela e Indexador</label>
+                            <div class="flex flex-wrap gap-2">
+                                <label class="checkbox-item">
+                                    <input type="radio" name="tabela" value="TR SAC" class="hidden">
+                                    <span>TR SAC</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="radio" name="tabela" value="TR PRICE" class="hidden">
+                                    <span>TR PRICE</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Documentação -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                        <i data-lucide="file-check" class="h-5 w-5 text-blue-600"></i>
+                        Documentação
+                    </h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Comprador</label>
+                            <div class="space-y-2">
+                                <label class="checkbox-item w-full justify-center">
+                                    <input type="radio" name="docComprador" value="Completa" class="hidden">
+                                    <span class="text-green-600 font-medium">Completa</span>
+                                </label>
+                                <label class="checkbox-item w-full justify-center">
+                                    <input type="radio" name="docComprador" value="Incompleta" class="hidden">
+                                    <span class="text-red-600 font-medium">Incompleta</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Imóvel</label>
+                            <div class="space-y-2">
+                                <label class="checkbox-item w-full justify-center">
+                                    <input type="radio" name="docImovel" value="Completa" class="hidden">
+                                    <span class="text-green-600 font-medium">Completa</span>
+                                </label>
+                                <label class="checkbox-item w-full justify-center">
+                                    <input type="radio" name="docImovel" value="Incompleta" class="hidden">
+                                    <span class="text-red-600 font-medium">Incompleta</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Vendedor</label>
+                            <div class="space-y-2">
+                                <label class="checkbox-item w-full justify-center">
+                                    <input type="radio" name="docVendedor" value="Completa" class="hidden">
+                                    <span class="text-green-600 font-medium">Completa</span>
+                                </label>
+                                <label class="checkbox-item w-full justify-center">
+                                    <input type="radio" name="docVendedor" value="Incompleta" class="hidden">
+                                    <span class="text-red-600 font-medium">Incompleta</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Aprovação e Status -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                        <i data-lucide="check-circle" class="h-5 w-5 text-blue-600"></i>
+                        Aprovação e Status
+                    </h2>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Status da Aprovação</label>
+                            <div class="flex flex-wrap gap-2">
+                                <label class="checkbox-item border-green-200">
+                                    <input type="radio" name="aprovacao" value="Aprovado" class="hidden">
+                                    <span class="status-aprovado">Aprovado</span>
+                                </label>
+                                <label class="checkbox-item border-red-200">
+                                    <input type="radio" name="aprovacao" value="Reprovado" class="hidden">
+                                    <span class="status-reprovado">Reprovado</span>
+                                </label>
+                                <label class="checkbox-item border-yellow-200">
+                                    <input type="radio" name="aprovacao" value="Condicionado" class="hidden">
+                                    <span class="status-condicionado">Condicionado</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Conformidade</label>
+                            <div class="flex flex-wrap gap-2">
+                                <label class="checkbox-item">
+                                    <input type="radio" name="conformidade" value="Não Enviado" class="hidden">
+                                    <span>Não Enviado</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="radio" name="conformidade" value="Enviado" class="hidden">
+                                    <span>Enviado</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="radio" name="conformidade" value="Inconforme" class="hidden">
+                                    <span>Inconforme</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="radio" name="conformidade" value="Conforme" class="hidden">
+                                    <span>Conforme</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Minuta</label>
+                            <div class="flex flex-wrap gap-2">
+                                <label class="checkbox-item">
+                                    <input type="radio" name="minuta" value="Aguardando" class="hidden">
+                                    <span>Aguardando</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="radio" name="minuta" value="Recebida" class="hidden">
+                                    <span>Recebida</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="radio" name="minuta" value="Assinada" class="hidden">
+                                    <span>Assinada</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Utilização FGTS</label>
+                            <div class="flex flex-wrap gap-2">
+                                <label class="checkbox-item">
+                                    <input type="radio" name="fgts" value="Sim" class="hidden">
+                                    <span>Sim</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="radio" name="fgts" value="Não" class="hidden">
+                                    <span>Não</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Valores -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                        <i data-lucide="dollar-sign" class="h-5 w-5 text-blue-600"></i>
+                        Valores
+                    </h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Valor Compra e Venda</label>
+                            <input type="text" id="valorCompra" placeholder="R$ 0,00" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 currency-input" oninput="formatCurrency(this)">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Valor Financiamento</label>
+                            <input type="text" id="valorFinanciamento" placeholder="R$ 0,00" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 currency-input" oninput="formatCurrency(this)">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Valor Engenharia</label>
+                            <input type="text" id="valorEngenharia" placeholder="R$ 0,00 ou texto" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" oninput="handleEngenharia(this)">
+                            <p class="text-xs text-gray-500 mt-1">* Se número, formata como moeda. Se texto, mantém original.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex gap-4 pb-8">
+                    <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium transition-colors">
+                        Salvar Cliente
+                    </button>
+                    <button type="button" onclick="voltar()" class="flex-1 bg-gray-600 hover:bg-gray-700 text-white py-3 rounded-lg font-medium transition-colors">
+                        Cancelar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Área de Acompanhamento -->
+        <div class="tracking-area">
+            <div class="tracking-header flex justify-between items-center">
+                <span class="font-semibold text-gray-900">Acompanhamento</span>
+                <span class="text-xs text-gray-500">${isEditing() ? 'Edição' : 'Novo'}</span>
+            </div>
+            <div class="tracking-content" id="timelineContainer">
+                <div class="text-center text-gray-400 mt-8">
+                    <i data-lucide="message-square" class="h-12 w-12 mx-auto mb-2 opacity-50"></i>
+                    <p class="text-sm">As atualizações aparecerão aqui após salvar</p>
+                </div>
+            </div>
+            <div class="tracking-input-area">
+                <textarea id="acompanhamentoInput" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none text-sm" placeholder="Digite uma atualização..."></textarea>
+                <button type="button" onclick="adicionarAcompanhamento()" class="mt-2 w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2">
+                    <i data-lucide="plus" class="h-4 w-4"></i>
+                    OK
+                </button>
+            </div>
+        </div>
+    </form>
+
+    <script>
+        let clienteId = null;
+        let acompanhamentos = [];
+        let indicacaoAnterior = null;
+
+        function checkAuth() {
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+            if (!user) {
+                window.location.href = 'index.html';
+                return;
+            }
+            loadIndicacoes();
+            
+            const editingId = localStorage.getItem('editingClient');
+            if (editingId) {
+                clienteId = parseInt(editingId);
+                document.getElementById('pageTitle').textContent = 'Editar Cliente';
+                carregarDadosCliente(clienteId);
+            }
+        }
+
+        function loadIndicacoes() {
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            const clientes = users.filter(u => u.type === 'cliente');
+            const select = document.getElementById('indicacao');
+            
+            clientes.forEach(c => {
+                const option = document.createElement('option');
+                option.value = c.name;
+                option.textContent = c.name;
+                select.appendChild(option);
+            });
+        }
+
+        function carregarDadosCliente(id) {
+            const clientes = JSON.parse(localStorage.getItem('clients') || '[]');
+            const cliente = clientes.find(c => c.id === id);
+            
+            if (!cliente) return;
+
+            indicacaoAnterior = cliente.indicacao;
+
+            document.getElementById('nome').value = cliente.nome;
+            document.getElementById('cpf').value = cliente.cpf;
+            document.getElementById('indicacao').value = cliente.indicacao;
+            
+            // Radio buttons
+            setRadioValue('imovel', cliente.imovel);
+            setRadioValue('cartaCredito', cliente.cartaCredito);
+            setRadioValue('tabela', cliente.tabela);
+            setRadioValue('docComprador', cliente.docComprador);
+            setRadioValue('docImovel', cliente.docImovel);
+            setRadioValue('docVendedor', cliente.docVendedor);
+            setRadioValue('aprovacao', cliente.aprovacao);
+            setRadioValue('conformidade', cliente.conformidade);
+            setRadioValue('minuta', cliente.minuta);
+            setRadioValue('fgts', cliente.fgts);
+
+            document.getElementById('valorCompra').value = cliente.valorCompraVenda || '';
+            document.getElementById('valorFinanciamento').value = cliente.valorFinanciamento || '';
+            document.getElementById('valorEngenharia').value = cliente.valorEngenharia || '';
+
+            acompanhamentos = cliente.acompanhamento || [];
+            renderTimeline();
+            
+            updateCheckboxStyles();
+        }
+
+        function setRadioValue(name, value) {
+            const radios = document.getElementsByName(name);
+            radios.forEach(r => {
+                if (r.value === value) r.checked = true;
+            });
+        }
+
+        function getRadioValue(name) {
+            const radios = document.getElementsByName(name);
+            for (let radio of radios) {
+                if (radio.checked) return radio.value;
+            }
+            return '';
+        }
+
+        function updateCheckboxStyles() {
+            document.querySelectorAll('.checkbox-item').forEach(item => {
+                const input = item.querySelector('input');
+                if (input.checked) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+        }
+
+        document.querySelectorAll('.checkbox-item input').forEach(input => {
+            input.addEventListener('change', updateCheckboxStyles);
+        });
+
+        function adicionarAcompanhamento() {
+            const input = document.getElementById('acompanhamentoInput');
+            const texto = input.value.trim();
+            if (!texto) return;
+
+            const now = new Date();
+            const dataStr = now.toLocaleString('pt-BR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            acompanhamentos.unshift({
+                data: dataStr,
+                texto: texto,
+                id: Date.now()
+            });
+
+            input.value = '';
+            renderTimeline();
+        }
+
+        function renderTimeline() {
+            const container = document.getElementById('timelineContainer');
+            if (acompanhamentos.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center text-gray-400 mt-8">
+                        <i data-lucide="message-square" class="h-12 w-12 mx-auto mb-2 opacity-50"></i>
+                        <p class="text-sm">Nenhuma atualização registrada</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+            const isAdmin = user.type === 'admin';
+
+            container.innerHTML = acompanhamentos.map(item => `
+                <div class="tracking-item ${isAdmin ? 'show-delete' : ''}">
+                    ${isAdmin ? `<button type="button" onclick="deleteTimelineItem(${item.id})" class="delete-btn"><i data-lucide="trash-2" class="h-4 w-4"></i></button>` : ''}
+                    <div class="tracking-date">${item.data}</div>
+                    <div class="tracking-text">${item.texto}</div>
+                </div>
+            `).join('');
+            
+            lucide.createIcons();
+        }
+
+        function deleteTimelineItem(id) {
+            if (!confirm('Deseja realmente excluir este registro?')) return;
+            acompanhamentos = acompanhamentos.filter(a => a.id !== id);
+            renderTimeline();
+        }
+
+        function formatCurrency(input) {
+            let value = input.value.replace(/\D/g, '');
+            value = (parseInt(value) / 100).toFixed(2);
+            input.value = new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            }).format(value);
+        }
+
+        function handleEngenharia(input) {
+            const value = input.value;
+            // Se for apenas números e vírgula/ponto, formata como moeda
+            if (/^[\d.,]+$/.test(value) && value.length > 0) {
+                const num = value.replace(/\D/g, '');
+                if (num.length > 0) {
+                    input.value = new Intl.NumberFormat('pt-BR', {
+                        style: 'currency',
+                        currency: 'BRL'
+                    }).format(parseInt(num) / 100);
+                    input.classList.add('text-green-600', 'font-medium');
+                }
+            } else {
+                input.classList.remove('text-green-600', 'font-medium');
+            }
+        }
+
+        function salvarCliente(e) {
+            e.preventDefault();
+            
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+            const clientes = JSON.parse(localStorage.getItem('clients') || '[]');
+            
+            const novoCliente = {
+                id: clienteId || Date.now(),
+                nome: document.getElementById('nome').value,
+                cpf: document.getElementById('cpf').value,
+                indicacao: document.getElementById('indicacao').value,
+                imovel: getRadioValue('imovel'),
+                cartaCredito: getRadioValue('cartaCredito'),
+                tabela: getRadioValue('tabela'),
+                docComprador: getRadioValue('docComprador'),
+                docImovel: getRadioValue('docImovel'),
+                docVendedor: getRadioValue('docVendedor'),
+                aprovacao: getRadioValue('aprovacao'),
+                conformidade: getRadioValue('conformidade'),
+                minuta: getRadioValue('minuta'),
+                fgts: getRadioValue('fgts'),
+                valorCompraVenda: document.getElementById('valorCompra').value,
+                valorFinanciamento: document.getElementById('valorFinanciamento').value,
+                valorEngenharia: document.getElementById('valorEngenharia').value,
+                acompanhamento: acompanhamentos
+            };
+
+            // Se mudou a indicação, adiciona registro no acompanhamento
+            if (clienteId && indicacaoAnterior && indicacaoAnterior !== novoCliente.indicacao) {
+                const now = new Date();
+                const dataStr = now.toLocaleString('pt-BR');
+                novoCliente.acompanhamento.unshift({
+                    data: dataStr,
+                    texto: `Indicação alterada de "${indicacaoAnterior}" para "${novoCliente.indicacao}"`,
+                    id: Date.now()
+                });
+            }
+
+            if (clienteId) {
+                const index = clientes.findIndex(c => c.id === clienteId);
+                if (index !== -1) {
+                    clientes[index] = novoCliente;
+                }
+            } else {
+                clientes.push(novoCliente);
+            }
+
+            localStorage.setItem('clients', JSON.stringify(clientes));
+            alert('Cliente salvo com sucesso!');
+            voltar();
+        }
+
+        function voltar() {
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+            if (user.type === 'admin') {
+                window.location.href = 'admin.html';
+            } else {
+                window.location.href = 'funcionario.html';
+            }
+        }
+
+        function isEditing() {
+            return !!clienteId;
+        }
+
+        window.onload = function() {
+            lucide.createIcons();
+            checkAuth();
+        };
+    </script>
+</body>
+</html>

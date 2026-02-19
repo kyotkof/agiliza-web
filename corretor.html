@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meus Clientes - Agiliza</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-gray-50">
+    <header class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <i data-lucide="home" class="h-8 w-8 text-blue-600 mr-2"></i>
+                    <span class="text-2xl font-bold text-gray-900">Agiliza</span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <span id="userName" class="text-sm text-gray-600 font-medium"></span>
+                    <button onclick="logout()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                        Sair
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="mb-6">
+            <h1 class="text-2xl font-bold text-gray-900 mb-2">Meus Clientes Indicados</h1>
+            <p class="text-gray-600">Acompanhe o status de todos os seus clientes em tempo real</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="clientesGrid">
+            <!-- Clientes serão carregados aqui -->
+        </div>
+
+        <div id="emptyState" class="hidden text-center py-12">
+            <i data-lucide="users" class="h-16 w-16 text-gray-300 mx-auto mb-4"></i>
+            <h3 class="text-lg font-medium text-gray-900 mb-2">Nenhum cliente encontrado</h3>
+            <p class="text-gray-600">Ainda não há clientes indicados por você no sistema.</p>
+        </div>
+    </main>
+
+    <script>
+        let currentUser = null;
+
+        function checkAuth() {
+            const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+            if (!user.id || user.type !== 'cliente') {
+                window.location.href = 'index.html';
+                return;
+            }
+            currentUser = user;
+            document.getElementById('userName').textContent = user.name;
+            loadClientes();
+        }
+
+        function logout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'index.html';
+        }
+
+        function loadClientes() {
+            const clientes = JSON.parse(localStorage.getItem('clients') || '[]');
+            const meusClientes = clientes.filter(c => c.indicacao === currentUser.name);
+            const grid = document.getElementById('clientesGrid');
+            
+            if (meusClientes.length === 0) {
+                document.getElementById('emptyState').classList.remove('hidden');
+                return;
+            }
+
+            meusClientes.forEach(cliente => {
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow cursor-pointer';
+                card.onclick = () => viewCliente(cliente.id);
+                
+                const lastUpdate = cliente.acompanhamento && cliente.acompanhamento.length > 0 
+                    ? cliente.acompanhamento[0].data 
+                    : 'Sem atualizações';
+
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h3 class="font-semibold text-lg text-gray-900">${cliente.nome}</h3>
+                            <p class="text-sm text-gray-500">CPF: ${cliente.cpf}</p>
+                        </div>
+                        <span class="px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(cliente.aprovacao)}">
+                            ${cliente.aprovacao || 'Em análise'}
+                        </span>
+                    </div>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Imóvel:</span>
+                            <span class="font-medium">${cliente.imovel || '-'}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Valor:</span>
+                            <span class="font-medium">${formatCurrency(cliente.valorCompraVenda)}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Financiamento:</span>
+                            <span class="font-medium">${formatCurrency(cliente.valorFinanciamento)}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Conformidade:</span>
+                            <span class="font-medium ${getConformidadeColor(cliente.conformidade)}">${cliente.conformidade || 'Não enviado'}</span>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-gray-200">
+                        <div class="flex items-center gap-2 text-xs text-gray-500">
+                            <i data-lucide="clock" class="h-3 w-3"></i>
+                            Última atualização: ${lastUpdate}
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+            lucide.createIcons();
+        }
+
+        function getStatusColor(status) {
+            switch(status?.toLowerCase()) {
+                case 'aprovado': return 'bg-green-100 text-green-800';
+                case 'reprovado': return 'bg-red-100 text-red-800';
+                case 'condicionado': return 'bg-yellow-100 text-yellow-800';
+                default: return 'bg-gray-100 text-gray-800';
+            }
+        }
+
+        function getConformidadeColor(status) {
+            switch(status?.toLowerCase()) {
+                case 'conforme': return 'text-green-600';
+                case 'inconforme': return 'text-red-600';
+                case 'enviado': return 'text-blue-600';
+                default: return 'text-gray-600';
+            }
+        }
+
+        function formatCurrency(value) {
+            if (!value) return 'R$ 0,00';
+            return new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            }).format(parseFloat(value));
+        }
+
+        function viewCliente(id) {
+            localStorage.setItem('viewingClientId', id);
+            window.location.href = 'cliente-view.html?mode=view';
+        }
+
+        window.onload = function() {
+            checkAuth();
+        };
+    </script>
+</body>
+</html>

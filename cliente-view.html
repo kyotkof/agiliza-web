@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes do Cliente - Agiliza</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-gray-50">
+    <header class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <i data-lucide="home" class="h-8 w-8 text-blue-600 mr-2"></i>
+                    <span class="text-2xl font-bold text-gray-900">Detalhes do Cliente</span>
+                </div>
+                <button onclick="voltar()" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2">
+                    <i data-lucide="arrow-left" class="h-4 w-4"></i>
+                    Voltar
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-layout">
+        <div class="content-area">
+            <div class="max-w-4xl space-y-6">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h1 class="text-2xl font-bold text-gray-900" id="clienteNome"></h1>
+                            <p class="text-gray-600 mt-1" id="clienteCpf"></p>
+                        </div>
+                        <span id="statusBadge" class="px-3 py-1 rounded-full text-sm font-medium"></span>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                            <span class="text-gray-500">Indicação:</span>
+                            <span class="font-medium ml-2" id="clienteIndicacao"></span>
+                        </div>
+                        <div>
+                            <span class="text-gray-500">Imóvel:</span>
+                            <span class="font-medium ml-2" id="clienteImovel"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                        <h3 class="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                            <i data-lucide="file-text" class="h-5 w-5 text-blue-600"></i>
+                            Documentação
+                        </h3>
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                                <span class="text-sm font-medium text-gray-700">Comprador</span>
+                                <span id="docComprador" class="text-sm font-semibold"></span>
+                            </div>
+                            <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                                <span class="text-sm font-medium text-gray-700">Imóvel</span>
+                                <span id="docImovel" class="text-sm font-semibold"></span>
+                            </div>
+                            <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                                <span class="text-sm font-medium text-gray-700">Vendedor</span>
+                                <span id="docVendedor" class="text-sm font-semibold"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                        <h3 class="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                            <i data-lucide="dollar-sign" class="h-5 w-5 text-blue-600"></i>
+                            Valores
+                        </h3>
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                                <span class="text-sm text-gray-600">Compra e Venda</span>
+                                <span id="valorCompra" class="font-medium"></span>
+                            </div>
+                            <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                                <span class="text-sm text-gray-600">Financiamento</span>
+                                <span id="valorFinanciamento" class="font-medium"></span>
+                            </div>
+                            <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                                <span class="text-sm text-gray-600">Engenharia</span>
+                                <span id="valorEngenharia" class="font-medium"></span>
+                            </div>
+                            <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                                <span class="text-sm text-gray-600">FGTS</span>
+                                <span id="fgts" class="font-medium"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <h3 class="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                        <i data-lucide="check-circle" class="h-5 w-5 text-blue-600"></i>
+                        Status do Processo
+                    </h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="text-center p-4 bg-gray-50 rounded-lg">
+                            <p class="text-xs text-gray-500 mb-1">Aprovação</p>
+                            <p id="statusAprovacao" class="font-semibold text-sm"></p>
+                        </div>
+                        <div class="text-center p-4 bg-gray-50 rounded-lg">
+                            <p class="text-xs text-gray-500 mb-1">Conformidade</p>
+                            <p id="statusConformidade" class="font-semibold text-sm"></p>
+                        </div>
+                        <div class="text-center p-4 bg-gray-50 rounded-lg">
+                            <p class="text-xs text-gray-500 mb-1">Minuta</p>
+                            <p id="statusMinuta" class="font-semibold text-sm"></p>
+                        </div>
+                        <div class="text-center p-4 bg-gray-50 rounded-lg">
+                            <p class="text-xs text-gray-500 mb-1">Carta de Crédito</p>
+                            <p id="statusCarta" class="font-semibold text-sm"></p>
+                        </div>
+                    </div>
+                    <div class="mt-4 grid grid-cols-2 gap-4">
+                        <div class="text-center p-4 bg-gray-50 rounded-lg">
+                            <p class="text-xs text-gray-500 mb-1">Tabela</p>
+                            <p id="statusTabela" class="font-semibold text-sm"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tracking-area">
+            <div class="tracking-header flex justify-between items-center">
+                <span class="font-semibold text-gray-900">Acompanhamento</span>
+                <span class="text-xs text-gray-500" id="atualizacoesCount"></span>
+            </div>
+            <div class="tracking-content" id="timelineContainer">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function checkAuth() {
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+            if (!user) {
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            const clienteId = localStorage.getItem('viewingClientId');
+            if (!clienteId) {
+                alert('Nenhum cliente selecionado');
+                voltar();
+                return;
+            }
+            
+            carregarDados(parseInt(clienteId), user);
+        }
+
+        function carregarDados(id, user) {
+            const clientes = JSON.parse(localStorage.getItem('clients') || '[]');
+            const cliente = clientes.find(c => c.id === id);
+            
+            if (!cliente) {
+                alert('Cliente não encontrado');
+                voltar();
+                return;
+            }
+            
+            // Verificar permissão
+            if (user.type === 'cliente' && cliente.indicacao !== user.name) {
+                alert('Você não tem permissão para ver este cliente');
+                voltar();
+                return;
+            }
+            
+            // Preencher dados básicos
+            document.getElementById('clienteNome').textContent = cliente.nome;
+            document.getElementById('clienteCpf').textContent = `CPF: ${cliente.cpf}`;
+            document.getElementById('clienteIndicacao').textContent = cliente.indicacao || '-';
+            document.getElementById('clienteImovel').textContent = cliente.imovel || '-';
+            
+            // Badge de status
+            const badge = document.getElementById('statusBadge');
+            badge.textContent = cliente.aprovacao || 'Pendente';
+            badge.className = `px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(cliente.aprovacao)}`;
+            
+            // Documentação
+            setDocStatus('docComprador', cliente.docComprador);
+            setDocStatus('docImovel', cliente.docImovel);
+            setDocStatus('docVendedor', cliente.docVendedor);
+            
+            // Valores
+            document.getElementById('valorCompra').textContent = cliente.valorCompraVenda || 'R$ 0,00';
+            document.getElementById('valorFinanciamento').textContent = cliente.valorFinanciamento || 'R$ 0,00';
+            
+            // Engenharia
+            const engEl = document.getElementById('valorEngenharia');
+            if (cliente.valorEngenharia && cliente.valorEngenharia.startsWith('R$')) {
+                engEl.textContent = cliente.valorEngenharia;
+                engEl.className = 'font-medium text-green-600';
+            } else {
+                engEl.textContent = cliente.valorEngenharia || '-';
+                engEl.className = 'font-medium';
+            }
+            
+            document.getElementById('fgts').textContent = cliente.fgts || '-';
+            
+            // Status
+            document.getElementById('statusAprovacao').textContent = cliente.aprovacao || 'Pendente';
+            document.getElementById('statusAprovacao').className = `font-semibold text-sm ${getStatusTextColor(cliente.aprovacao)}`;
+            
+            document.getElementById('statusConformidade').textContent = cliente.conformidade || 'Não Enviado';
+            document.getElementById('statusMinuta').textContent = cliente.minuta || 'Aguardando';
+            document.getElementById('statusCarta').textContent = cliente.cartaCredito || '-';
+            document.getElementById('statusTabela').textContent = cliente.tabela || '-';
+            
+            // Timeline
+            renderTimeline(cliente.acompanhamento || []);
+        }
+
+        function setDocStatus(elementId, status) {
+            const el = document.getElementById(elementId);
+            el.textContent = status || 'Incompleta';
+            if (status === 'Completa') {
+                el.className = 'text-sm font-semibold text-green-600';
+            } else {
+                el.className = 'text-sm font-semibold text-red-600';
+            }
+        }
+
+        function getStatusColor(status) {
+            switch(status?.toLowerCase()) {
+                case 'aprovado': return 'bg-green-100 text-green-800';
+                case 'reprovado': return 'bg-red-100 text-red-800';
+                case 'condicionado': return 'bg-yellow-100 text-yellow-800';
+                default: return 'bg-gray-100 text-gray-800';
+            }
+        }
+
+        function getStatusTextColor(status) {
+            switch(status?.toLowerCase()) {
+                case 'aprovado': return 'text-green-600';
+                case 'reprovado': return 'text-red-600';
+                case 'condicionado': return 'text-yellow-600';
+                default: return 'text-gray-600';
+            }
+        }
+
+        function renderTimeline(acompanhamentos) {
+            const container = document.getElementById('timelineContainer');
+            document.getElementById('atualizacoesCount').textContent = `${acompanhamentos.length} atualizações`;
+            
+            if (acompanhamentos.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center text-gray-400 mt-8">
+                        <i data-lucide="message-square" class="h-12 w-12 mx-auto mb-2 opacity-50"></i>
+                        <p class="text-sm">Nenhuma atualização registrada</p>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+            
+            container.innerHTML = acompanhamentos.map(item => `
+                <div class="tracking-item">
+                    <div class="tracking-date">${item.data}</div>
+                    <div class="tracking-text">${item.texto}</div>
+                </div>
+            `).join('');
+        }
+
+        function voltar() {
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+            if (!user) {
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            switch(user.type) {
+                case 'admin':
+                    window.location.href = 'admin.html';
+                    break;
+                case 'funcionario':
+                    window.location.href = 'funcionario.html';
+                    break;
+                case 'cliente':
+                    window.location.href = 'corretor.html';
+                    break;
+                default:
+                    window.location.href = 'index.html';
+            }
+        }
+
+        window.onload = function() {
+            lucide.createIcons();
+            checkAuth();
+        };
+    </script>
+</body>
+</html>

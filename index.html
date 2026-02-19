@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agiliza - Despachante Imobiliário</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <i data-lucide="home" class="h-8 w-8 text-blue-600 mr-2"></i>
+                    <span class="text-2xl font-bold text-gray-900">Agiliza</span>
+                </div>
+                <button onclick="openLoginModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors flex items-center gap-2">
+                    <i data-lucide="user" class="h-4 w-4"></i>
+                    Login
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div class="text-center">
+            <h1 class="text-4xl font-bold text-gray-900 mb-4">
+                Controle de Processos Imobiliários
+            </h1>
+            <p class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+                Sistema de acompanhamento e controle de clientes para despachante imobiliário. 
+                Gerencie aprovações, documentações e acompanhamento em tempo real.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                    <i data-lucide="shield-check" class="h-12 w-12 text-blue-600 mx-auto mb-4"></i>
+                    <h3 class="font-semibold text-lg mb-2">Administrador</h3>
+                    <p class="text-gray-600 text-sm">Controle total do sistema, cadastro de clientes e usuários</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                    <i data-lucide="users" class="h-12 w-12 text-green-600 mx-auto mb-4"></i>
+                    <h3 class="font-semibold text-lg mb-2">Funcionários</h3>
+                    <p class="text-gray-600 text-sm">Cadastro e edição de clientes e acompanhamento</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                    <i data-lucide="building-2" class="h-12 w-12 text-purple-600 mx-auto mb-4"></i>
+                    <h3 class="font-semibold text-lg mb-2">Imobiliárias</h3>
+                    <p class="text-gray-600 text-sm">Acompanhamento exclusivo dos clientes indicados</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-8 max-w-md w-full mx-4 shadow-2xl">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-900">Login</h2>
+                <button onclick="closeLoginModal()" class="text-gray-400 hover:text-gray-600">
+                    <i data-lucide="x" class="h-6 w-6"></i>
+                </button>
+            </div>
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Usuário</label>
+                    <input type="text" id="username" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Senha</label>
+                    <input type="password" id="password" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium transition-colors">
+                    Entrar
+                </button>
+                <div id="loginError" class="mt-4 text-red-600 text-sm text-center hidden">
+                    Usuário ou senha incorretos
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Inicializar dados se não existirem
+        if (!localStorage.getItem('users')) {
+            const initialUsers = [
+                { id: 1, username: 'ADMIN', password: 'Playcard123', type: 'admin', name: 'Administrador' },
+                { id: 2, username: 'func1', password: '123', type: 'funcionario', name: 'Funcionário 1' },
+                { id: 3, username: 'imob1', password: '123', type: 'cliente', name: 'Imobiliária Exemplo' }
+            ];
+            localStorage.setItem('users', JSON.stringify(initialUsers));
+        }
+
+        function openLoginModal() {
+            document.getElementById('loginModal').classList.remove('hidden');
+            document.getElementById('loginModal').classList.add('flex');
+        }
+
+        function closeLoginModal() {
+            document.getElementById('loginModal').classList.add('hidden');
+            document.getElementById('loginModal').classList.remove('flex');
+            document.getElementById('loginError').classList.add('hidden');
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value.toUpperCase();
+            const password = document.getElementById('password').value;
+            
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            const user = users.find(u => u.username === username && u.password === password);
+            
+            if (user) {
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                redirectBasedOnRole(user.type);
+            } else {
+                document.getElementById('loginError').classList.remove('hidden');
+            }
+        }
+
+        function redirectBasedOnRole(type) {
+            switch(type) {
+                case 'admin':
+                    window.location.href = 'admin.html';
+                    break;
+                case 'funcionario':
+                    window.location.href = 'funcionario.html';
+                    break;
+                case 'cliente':
+                    window.location.href = 'corretor.html';
+                    break;
+            }
+        }
+
+        // Verificar se já está logado
+        window.onload = function() {
+            lucide.createIcons();
+            const currentUser = localStorage.getItem('currentUser');
+            if (currentUser) {
+                const user = JSON.parse(currentUser);
+                redirectBasedOnRole(user.type);
+            }
+        };
+    </script>
+<script src="https://deepsite.hf.co/deepsite-badge.js"></script>
+</body>
+</html>

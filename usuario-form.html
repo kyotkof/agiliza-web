@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar Usuário - Agiliza</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-gray-50">
+    <header class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <i data-lucide="home" class="h-8 w-8 text-blue-600 mr-2"></i>
+                    <span class="text-2xl font-bold text-gray-900">Cadastrar Usuário</span>
+                </div>
+                <button onclick="voltar()" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                    Voltar
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <form id="usuarioForm" onsubmit="salvarUsuario(event)">
+                <div class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Nome do Usuário</label>
+                        <input type="text" id="nomeUsuario" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Nome para exibição">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Login (Username)</label>
+                        <input type="text" id="username" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 uppercase" placeholder="LOGIN">
+                        <p class="text-xs text-gray-500 mt-1">Será convertido para maiúsculas automaticamente</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Senha</label>
+                        <input type="password" id="senha" required minlength="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Mínimo 3 caracteres">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de Usuário</label>
+                        <div class="grid grid-cols-2 gap-4">
+                            <label class="border rounded-lg p-4 cursor-pointer hover:bg-gray-50 transition-colors flex items-center gap-3">
+                                <input type="radio" name="tipo" value="funcionario" class="h-4 w-4 text-blue-600" checked>
+                                <div>
+                                    <span class="font-medium block">Funcionário</span>
+                                    <span class="text-xs text-gray-500">Pode cadastrar e editar clientes</span>
+                                </div>
+                            </label>
+                            <label class="border rounded-lg p-4 cursor-pointer hover:bg-gray-50 transition-colors flex items-center gap-3">
+                                <input type="radio" name="tipo" value="cliente" class="h-4 w-4 text-blue-600">
+                                <div>
+                                    <span class="font-medium block">Cliente (Imobiliária/Corretor)</span>
+                                    <span class="text-xs text-gray-500">Apenas visualiza seus clientes</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4 pt-4">
+                        <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium transition-colors">
+                            Salvar Usuário
+                        </button>
+                        <button type="button" onclick="voltar()" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 py-3 rounded-lg font-medium transition-colors">
+                            Cancelar
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="mt-8 bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <h3 class="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                <i data-lucide="users" class="h-5 w-5 text-blue-600"></i>
+                Usuários Cadastrados
+            </h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead class="bg-gray-50 border-b border-gray-200">
+                        <tr>
+                            <th class="px-4 py-2 text-sm font-medium text-gray-700">Nome</th>
+                            <th class="px-4 py-2 text-sm font-medium text-gray-700">Username</th>
+                            <th class="px-4 py-2 text-sm font-medium text-gray-700">Tipo</th>
+                            <th class="px-4 py-2 text-sm font-medium text-gray-700">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usuariosTable" class="divide-y divide-gray-200">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function checkAuth() {
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+            if (!user || user.type !== 'admin') {
+                window.location.href = 'index.html';
+                return;
+            }
+        }
+
+        function salvarUsuario(e) {
+            e.preventDefault();
+            
+            const nome = document.getElementById('nomeUsuario').value;
+            const username = document.getElementById('username').value.toUpperCase();
+            const senha = document.getElementById('senha').value;
+            const tipo = document.querySelector('input[name="tipo"]:checked').value;
+            
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            
+            // Verificar se username já existe
+            if (users.find(u => u.username === username)) {
+                alert('Este nome de usuário já existe!');
+                return;
+            }
+            
+            const novoUsuario = {
+                id: Date.now(),
+                name: nome,
+                username: username,
+                password: senha,
+                type: tipo
+            };
+            
+            users.push(novoUsuario);
+            localStorage.setItem('users', JSON.stringify(users));
+            
+            alert('Usuário cadastrado com sucesso!');
+            document.getElementById('usuarioForm').reset();
+            loadUsuarios();
+        }
+
+        function loadUsuarios() {
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            const tbody = document.getElementById('usuariosTable');
+            
+            // Filtrar para não mostrar o admin principal (id=1) ou mostrar como Administrador
+            tbody.innerHTML = users.map(u => `
+                <tr class="hover:bg-gray-50">
+                    <td class="px-4 py-3 text-sm text-gray-900">${u.name}</td>
+                    <td class="px-4 py-3 text-sm text-gray-600 font-mono">${u.username}</td>
+                    <td class="px-4 py-3 text-sm">
+                        <span class="px-2 py-1 rounded-full text-xs font-medium ${getTipoColor(u.type)}">
+                            ${u.type === 'admin' ? 'Administrador' : u.type === 'funcionario' ? 'Funcionário' : 'Imobiliária/Corretor'}
+                        </span>
+                    </td>
+                    <td class="px-4 py-3 text-sm">
+                        ${u.id !== 1 ? `<button onclick="excluirUsuario(${u.id})" class="text-red-600 hover:text-red-800">
+                            <i data-lucide="trash-2" class="h-4 w-4"></i>
+                        </button>` : '-'}
+                    </td>
+                </tr>
+            `).join('');
+            
+            lucide.createIcons();
+        }
+
+        function getTipoColor(tipo) {
+            switch(tipo) {
+                case 'admin': return 'bg-purple-100 text-purple-800';
+                case 'funcionario': return 'bg-blue-100 text-blue-800';
+                case 'cliente': return 'bg-green-100 text-green-800';
+                default: return 'bg-gray-100 text-gray-800';
+            }
+        }
+
+        function excluirUsuario(id) {
+            if (!confirm('Deseja realmente excluir este usuário?')) return;
+            
+            let users = JSON.parse(localStorage.getItem('users') || '[]');
+            users = users.filter(u => u.id !== id);
+            localStorage.setItem('users', JSON.stringify(users));
+            
+            loadUsuarios();
+        }
+
+        function voltar() {
+            window.location.href = 'admin.html';
+        }
+
+        window.onload = function() {
+            lucide.createIcons();
+            checkAuth();
+            loadUsuarios();
+        };
+    </script>
+</body>
+</html>
